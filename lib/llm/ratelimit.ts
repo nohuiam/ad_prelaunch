@@ -32,7 +32,9 @@ export function checkRateLimit(ip: string): { ok: boolean; retryAfter?: number }
     buckets.set(ip, b);
   } else {
     // Refill based on elapsed time since we last touched this bucket.
-    b.tokens = Math.min(CAPACITY, b.tokens + (now - b.last) * REFILL_PER_MS);
+    // Clamp to >=0 so a backward clock jump (NTP) can't drain tokens.
+    const elapsed = Math.max(0, now - b.last);
+    b.tokens = Math.min(CAPACITY, b.tokens + elapsed * REFILL_PER_MS);
     b.last = now;
   }
 

@@ -1,0 +1,281 @@
+// Taboola (Realize) native-ad rule pack — transcribed from research/policy_taboola.md.
+// Severity mapped to lowercase: HIGH→high (hard reject), MED→med (Medium-rating gated), LOW→low (warn).
+// Rules apply to the WHOLE funnel: creative + landing page + every subsequent redirect/gallery page.
+import type { RulePack } from "@/lib/policy/types";
+
+export const TABOOLA: RulePack = {
+  network: "taboola",
+  displayName: "Taboola (Realize)",
+  rules: [
+    // A. Health / supplement / disease claims
+    {
+      id: "A1",
+      name: "Disease vs symptom claim",
+      triggers: ["reverses type 2 diabetes", "diabetes", "cancer", "arthritis", "alzheimer's", "hypertension", "neuropathy", "blood sugar"],
+      example: "This root reverses type 2 diabetes in weeks.",
+      severity: "high",
+    },
+    {
+      id: "A2",
+      name: "Absolute cure/treat/prevent/reverse language",
+      triggers: ["cure", "cures", "prevent", "treat", "reverse", "heal", "end years of", "get rid of", "eliminate", "100% effective"],
+      example: "Get rid of joint pain forever — no doctor needed.",
+      severity: "high",
+    },
+    {
+      id: "A3",
+      name: "Disparaging / replacing conventional medicine",
+      triggers: ["forget the pills", "you don't need surgery", "better than", "ditch your prescription", "big pharma doesn't want you to know"],
+      example: "Forget the pills — doctors hate this 1 trick.",
+      severity: "high",
+    },
+    {
+      id: "A4",
+      name: "False professional / authority endorsement",
+      triggers: ["doctor recommended", "fda approved", "clinically proven", "endorsed by", "mayo clinic"],
+      example: "FDA-approved fat burner endorsed by Mayo Clinic.",
+      severity: "high",
+    },
+    {
+      id: "A5",
+      name: "Missing supplement substantiation on landing page",
+      triggers: ["boosts metabolism 300%", "no study cited", "no ingredient list"],
+      example: "Claim \"boosts metabolism 300%\" with no cited study on LP.",
+      severity: "high",
+    },
+    {
+      id: "A6",
+      name: "Missing FDA / medical disclaimer (ingestibles & topicals, US)",
+      // Absence rule: triggers describe the GAP, not the disclaimer text itself
+      // (matching "not intended to diagnose" would flag pages that DO carry the disclaimer).
+      triggers: ["supplement page missing disclaimer", "no fda disclaimer block"],
+      example: "Supplement sales page with zero disclaimer block.",
+      severity: "high",
+    },
+    {
+      id: "A7",
+      name: "Restricted sub-categories — men's health (ED)",
+      triggers: ["erectile dysfunction", "viagra", "cialis"],
+      example: "Cure Erectile Dysfunction with this Viagra alternative.",
+      severity: "high",
+    },
+    {
+      id: "A8",
+      name: "Restricted sub-categories — diabetes / CBD / cannabis",
+      triggers: ["diabetes destroyer", "cbd", "hemp leaf", "cannabis"],
+      example: "Thumbnail showing a hemp leaf over \"Diabetes destroyer.\"",
+      severity: "high",
+    },
+    // B. Weight loss
+    {
+      id: "B1",
+      name: "Unrealistic loss-rate claim",
+      triggers: ["lose 30 lbs in 30 days", "lbs in", "no diet, no gym", "without dieting or exercise"],
+      example: "Lose 30 lbs in 30 days — no diet, no gym.",
+      severity: "high",
+    },
+    {
+      id: "B2",
+      name: "Missing mandatory weight-loss disclosures",
+      triggers: ["no results-not-typical", "no time-to-result", "1-2 pounds per week missing"],
+      example: "Before/after page with zero \"results not typical\" note.",
+      severity: "med",
+    },
+    {
+      id: "B3",
+      name: "Topical / wearable weight-loss product",
+      triggers: ["slimming patch", "slimming cream", "weight-loss patch", "melts belly fat overnight"],
+      example: "Slimming patch melts belly fat overnight.",
+      severity: "high",
+    },
+    // C. Before/after & thumbnail imagery
+    {
+      id: "C1",
+      name: "Fake / photoshopped before-after",
+      triggers: ["before and after", "before & after", "before/after", "photoshopped transformation"],
+      example: "Photoshopped before-after with mismatched bodies.",
+      severity: "high",
+    },
+    {
+      id: "C2",
+      name: "Racy / suggestive body imagery",
+      triggers: ["bikini", "underwear", "lingerie", "nudity"],
+      example: "Racy bikini before/after thumbnail.",
+      severity: "high",
+    },
+    {
+      id: "C3",
+      name: "Manipulative attention markers",
+      triggers: ["red circle", "red arrow", "belly-fat closeup", "extreme closeup"],
+      example: "Photoshopped red circles/arrows on a body part.",
+      severity: "med",
+    },
+    {
+      id: "C4",
+      name: "Shocking / offensive / sexual thumbnail",
+      triggers: ["gory", "violent image", "sexually suggestive", "offensive image"],
+      example: "Violent or sexually suggestive thumbnail.",
+      severity: "high",
+    },
+    {
+      id: "C5",
+      name: "Fake UI / false functionality in creative",
+      triggers: ["fake play button", "fake close button", "fake arrow", "fake cursor"],
+      example: "Fake play buttons / fake close (X) buttons.",
+      severity: "med",
+    },
+    // D. Headlines / titles (clickbait)
+    {
+      id: "D1",
+      name: "Sensational / exaggerated language",
+      triggers: ["!!!", "???", "shocking", "jaw-dropping"],
+      example: "Hype tone with excessive punctuation (\"!!!\").",
+      severity: "med",
+    },
+    {
+      id: "D2",
+      name: "Clickbait curiosity-gap / slide-bait",
+      triggers: ["this one trick", "doctors hate", "what happened next", "will shock you", "number 7", "click to see"],
+      example: "Number 7 will shock you — click to see #5.",
+      severity: "med",
+    },
+    {
+      id: "D3",
+      name: "Title–content mismatch",
+      triggers: ["title not supported", "numeric promise not met", "25 beaches"],
+      example: "Title promises \"25 beaches\" → page only shows 10.",
+      severity: "high",
+    },
+    {
+      id: "D4",
+      name: "Mean-spirited / objectifying",
+      triggers: ["prank", "exploit insecurities", "gossip", "objectifying"],
+      example: "Headline exploiting insecurities or objectifying celebrities.",
+      severity: "med",
+    },
+    // E. Advertorial / disclosure
+    {
+      id: "E1",
+      name: "Missing \"Advertorial\" label",
+      triggers: ["advertorial label missing", "article-style no advertorial"],
+      example: "Promotional LP styled as an article with no \"Advertorial\" label.",
+      severity: "high",
+    },
+    {
+      id: "E2",
+      name: "Missing sponsorship disclosure",
+      triggers: ["sponsored by missing", "no sponsorship disclosure"],
+      example: "Sponsored article without \"Sponsored By [Company]\" at top.",
+      severity: "high",
+    },
+    {
+      id: "E3",
+      name: "Fake news-site impersonation",
+      triggers: ["as seen on", "fake byline", "news outlet logo", "press bar"],
+      example: "LP mimicking a news outlet with fabricated bylines.",
+      severity: "high",
+    },
+    {
+      id: "E4",
+      name: "Unauthorized brand / celebrity / govt assets",
+      triggers: ["celebrity image", "brand logo unauthorized", "government symbol"],
+      example: "Celebrity images or brand logos without authorization.",
+      severity: "high",
+    },
+    {
+      id: "E5",
+      name: "Ad not identifiable as an ad",
+      triggers: ["undisclosed ad", "native content undisclosed"],
+      example: "Third-party content on funnel not disclosed as ads.",
+      severity: "med",
+    },
+    // F. Testimonials & proof
+    {
+      id: "F1",
+      name: "Undisclosed paid testimonials",
+      triggers: ["paid testimonials undisclosed", "reviewers were compensated missing"],
+      example: "Testimonials without a paid-testimonial disclosure.",
+      severity: "med",
+    },
+    {
+      id: "F2",
+      name: "Atypical-results testimonial without qualifier",
+      triggers: ["i lost", "results not typical missing", "strong-result testimonial"],
+      example: "Strong-result testimonial missing \"Results not typical.\"",
+      severity: "med",
+    },
+    {
+      id: "F3",
+      name: "Fabricated social proof",
+      triggers: ["fake comments", "invented review count", "fake screenshots"],
+      example: "Fake social-media comments / invented review counts.",
+      severity: "med",
+    },
+    // G. Financial / make-money
+    {
+      id: "G1",
+      name: "Guaranteed / unrealistic earnings",
+      triggers: ["guaranteed income", "make $", "/day from home", "get rich", "risk-free returns", "passive income guaranteed"],
+      example: "Make $500/day from home — guaranteed income.",
+      severity: "high",
+    },
+    {
+      id: "G2",
+      name: "Get-rich-quick / deceptive schemes",
+      triggers: ["secret loophole", "the government doesn't want you to know", "this stock will 100x", "binary options", "pump"],
+      example: "Secret loophole — this stock will 100x.",
+      severity: "high",
+    },
+    {
+      id: "G3",
+      name: "Unsubstantiated comparative / competitor claims",
+      triggers: ["better than", "cheaper than", "#1", "the best"],
+      example: "\"Better than [competitor]\" with no support on LP.",
+      severity: "med",
+    },
+    // H. Deception / technical funnel
+    {
+      id: "H1",
+      name: "Cloaking / misleading redirects",
+      triggers: ["cloaking", "hidden destination", "different content to reviewers"],
+      example: "Cloaking — different content to reviewers vs users.",
+      severity: "high",
+    },
+    {
+      id: "H2",
+      name: "False urgency mechanics",
+      triggers: ["countdown timer", "today only", "auto-updating timestamp"],
+      example: "Countdown timer implying false scarcity.",
+      severity: "med",
+    },
+    {
+      id: "H3",
+      name: "Hidden costs / false \"free\"",
+      triggers: ["free bottle", "free trial", "monthly rebill", "auto-renew", "shipping not disclosed"],
+      example: "\"Free bottle!\" with concealed $89 monthly rebill.",
+      severity: "high",
+    },
+    {
+      id: "H4",
+      name: "Page quality / integrity defects",
+      triggers: ["broken links", "many typos", "plagiarized content", "forced registration"],
+      example: "LP with many typos and broken links.",
+      severity: "low",
+    },
+    {
+      id: "H5",
+      name: "Third-party content on LP undisclosed",
+      triggers: ["sponsored widget undisclosed", "unlabeled sponsored links"],
+      example: "Sponsored widgets on the LP not labeled as sponsored.",
+      severity: "med",
+    },
+  ],
+  sourceUrls: [
+    "https://help.taboola.com/hc/en-us/articles/115000220793-Restricted-Content-Products-and-Services",
+    "https://www.taboola.com/help/en/articles/3878202-prohibited-content-products-and-services",
+    "https://www.taboola.com/help/en/articles/3878205-landing-page-policies",
+    "https://help.taboola.com/hc/en-us/articles/115006853967-Title-Thumbnail-and-Branding-Text-Policies",
+    "https://help.taboola.com/hc/en-us/articles/115007291728-Campaign-Safety-Ratings",
+    "https://www.taboola.com/wp-content/uploads/2022/11/health-supplement-advertising-guidelines.pdf",
+  ],
+};

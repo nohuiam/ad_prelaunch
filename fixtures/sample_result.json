@@ -1,0 +1,74 @@
+{
+  "perNetwork": [
+    {
+      "network": "meta",
+      "score": 9.5,
+      "tier": "BLOCK",
+      "findings": [
+        {
+          "ruleId": "CB-01",
+          "network": "meta",
+          "severity": "high",
+          "title": "\"Doctors hate this\" clickbait",
+          "evidence": "Doctors HATE this one weird trick",
+          "why": "Suppressed-secret clickbait is prohibited and a fast path to account suspension.",
+          "suggestedFix": "Describe the product plainly without 'doctors hate this' framing."
+        },
+        {
+          "ruleId": "HW-01",
+          "network": "meta",
+          "severity": "high",
+          "title": "Disease cure claim",
+          "evidence": "reverse diabetes in 30 days",
+          "why": "Claiming to cure or reverse a disease is prohibited for non-drug products.",
+          "suggestedFix": "Drop disease claims; describe general wellness support only."
+        }
+      ]
+    },
+    {
+      "network": "google",
+      "score": 3.0,
+      "tier": "REVIEW",
+      "findings": [
+        {
+          "ruleId": "D5",
+          "network": "google",
+          "severity": "med",
+          "title": "Unsubstantiated health claim",
+          "evidence": "clinically proven",
+          "why": "\"Clinically proven\" needs real substantiation or it reads as misleading.",
+          "suggestedFix": "Remove 'clinically proven' or link a real study on the landing page."
+        }
+      ]
+    },
+    {
+      "network": "tiktok",
+      "score": 0,
+      "tier": "CLEAR",
+      "findings": []
+    }
+  ],
+  "ftc": {
+    "findings": [
+      {
+        "ruleId": "A1",
+        "network": "ftc",
+        "severity": "high",
+        "title": "Missing affiliate disclosure",
+        "evidence": "(no disclosure found near affiliate links)",
+        "why": "A material connection (affiliate commission) must be disclosed clearly and conspicuously.",
+        "suggestedFix": "Add a visible 'I earn a commission' disclosure next to the link."
+      }
+    ]
+  },
+  "funnel": {
+    "fetched": true,
+    "finalUrl": "https://offer.example.com/vsl",
+    "redirectChain": [
+      "https://healthnews-today.example/article",
+      "https://track.example/clk?o=123",
+      "https://offer.example.com/vsl"
+    ],
+    "flags": ["domain_mismatch", "cloaking_suspected", "missing_disclosure"]
+  }
+}

@@ -1,13 +1,14 @@
 {
-  "offer": "A daily greens powder with 25 fruits and vegetables, probiotics, and adaptogens. For busy people who don't eat enough veggies and want more steady energy and better digestion.",
+  "offer": "A metabolism-support supplement with green tea extract and B vitamins, for people managing their weight who want a daily energy boost.",
   "network": "meta",
-  "count": 2,
+  "count": 3,
   "items": [
     {
       "creative": {
-        "headline": "Veggies you'll actually drink",
-        "primaryText": "Most of us don't eat enough vegetables. One scoop of our greens blend mixes 25 fruits and veggies, probiotics, and adaptogens into a glass — an easy daily habit for people who want more steady energy and easier digestion. Individual results vary.",
-        "cta": "Try it today"
+        "headline": "Daily Energy, Naturally",
+        "primaryText": "Start your morning with a little support. Our blend of green tea extract and B vitamins is made to help fuel your daily energy as part of a balanced routine. Results may vary.",
+        "description": "Green tea extract + B vitamins for everyday support.",
+        "cta": "Shop Now"
       },
       "verdict": {
         "network": "meta",
@@ -19,25 +20,31 @@
     },
     {
       "creative": {
-        "headline": "Clinically proven energy boost",
-        "primaryText": "Stop feeling sluggish by 2pm. Our clinically proven greens formula floods your body with 25 superfoods so you feel energized all day. Thousands have made the switch.",
-        "cta": "Shop now"
+        "headline": "Support Your Routine",
+        "primaryText": "Smart habits deserve smart support. This metabolism-support supplement pairs green tea extract with energizing B vitamins to complement an active lifestyle. Individual results vary.",
+        "description": "A simple daily addition to a balanced lifestyle.",
+        "cta": "Learn More"
       },
       "verdict": {
         "network": "meta",
-        "score": 2,
-        "tier": "REVIEW",
-        "findings": [
-          {
-            "ruleId": "EX-03",
-            "network": "meta",
-            "severity": "med",
-            "title": "Unsubstantiated \"clinically proven\" claim",
-            "evidence": "clinically proven greens formula",
-            "why": "Saying something is \"clinically proven\" without a study to back it up reads as misleading and draws extra review.",
-            "suggestedFix": "Drop \"clinically proven,\" or only use it if you can link a real study on the landing page."
-          }
-        ]
+        "score": 0,
+        "tier": "CLEAR",
+        "findings": []
+      },
+      "ftcFindings": []
+    },
+    {
+      "creative": {
+        "headline": "One Capsule, Real Simple",
+        "primaryText": "Looking for an easy add to a busy day? Our green tea and B-vitamin formula may help support metabolism and daily energy when paired with healthy choices. Results vary from person to person.",
+        "description": "Convenient daily support that fits your schedule.",
+        "cta": "Shop Now"
+      },
+      "verdict": {
+        "network": "meta",
+        "score": 0,
+        "tier": "CLEAR",
+        "findings": []
       },
       "ftcFindings": []
     }

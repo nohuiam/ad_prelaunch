@@ -31,7 +31,7 @@ const PARKED_MARKERS = [
   "the domain may be for sale",
   "this domain may be for sale",
   "domain parking",
-  "is for sale",
+  "domain for sale",
   "parked free",
   "hugedomains",
   "sedoparking",
@@ -160,7 +160,7 @@ export async function fetchLandingPage(url: string): Promise<Funnel & { text: st
       await finalRes.body?.cancel().catch(() => {});
     }
 
-    return buildResult({ redirectChain, finalUrl, status: finalRes.status, html, ok2xx });
+    return buildResult({ redirectChain, finalUrl, html, ok2xx });
   } finally {
     clearTimeout(timer);
   }
@@ -197,7 +197,6 @@ function hostsMismatch(chain: string[]): boolean {
 function buildResult(args: {
   redirectChain: string[];
   finalUrl: string;
-  status: number;
   html: string;
   ok2xx: boolean;
 }): FetchResult {
@@ -205,12 +204,14 @@ function buildResult(args: {
   const flags = new Set<string>();
 
   // --- Extract text + external-link signal from the parsed DOM ---
+  // Use the parser's safe defaults: script/style/noscript content stays opaque (block text),
+  // so removing those nodes cleanly drops their text without parsing JS/CSS as markup.
   let text = "";
   let externalLinks = 0;
   const finalHost = hostOf(finalUrl);
   if (html) {
     try {
-      const root = parse(html, { blockTextElements: { script: false, style: false } });
+      const root = parse(html);
       root.querySelectorAll("script, style, noscript, template, svg").forEach((n) => n.remove());
       const body = root.querySelector("body") ?? root;
       text = body.structuredText.replace(/\n{3,}/g, "\n\n").trim();
@@ -227,20 +228,22 @@ function buildResult(args: {
     }
   }
 
-  const lowered = text.toLowerCase();
+  const hasText = text.trim().length > 0;
+  const reachable = ok2xx && hasText;
 
-  // --- Flags ---
+  // --- Chain-derived flags (valid even when the body was unreadable) ---
   if (hostsMismatch(redirectChain)) flags.add("domain_mismatch");
+  if (countCrossDomainHops(redirectChain) >= 2) flags.add("cloaking_suspected");
 
-  const crossHops = countCrossDomainHops(redirectChain);
-  const tinyBody = text.length < TINY_BODY_CHARS;
-  if (crossHops >= 2 || (tinyBody && externalLinks === 1)) flags.add("cloaking_suspected");
+  // --- Content-derived flags: ONLY assert these when we actually read a body.
+  // Claiming "missing_disclosure" or "parked" about a page we never received is a false signal.
+  if (hasText) {
+    const lowered = text.toLowerCase();
+    if (text.length < TINY_BODY_CHARS && externalLinks === 1) flags.add("cloaking_suspected");
+    if (PARKED_MARKERS.some((m) => lowered.includes(m))) flags.add("parked");
+    if (!DISCLOSURE_MARKERS.some((m) => lowered.includes(m))) flags.add("missing_disclosure");
+  }
 
-  if (PARKED_MARKERS.some((m) => lowered.includes(m))) flags.add("parked");
-
-  if (!DISCLOSURE_MARKERS.some((m) => lowered.includes(m))) flags.add("missing_disclosure");
-
-  const reachable = ok2xx && text.trim().length > 0;
   if (!reachable) flags.add("unreachable");
 
   return {

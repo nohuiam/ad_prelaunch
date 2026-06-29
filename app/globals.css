@@ -1,26 +1,92 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ──────────────────────────────────────────────────────────────────────────
+   Ad Prelaunch — "Pre-Flight clearance" theme.
+   Control-room paper, instrument teal, and disciplined signal colors.
+   Boldness is spent in one place: the clearance verdict banner.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  --color-ink: #14181f; /* instrument bezel — primary text + dark surfaces */
+  --color-ink-soft: #2c333f;
+  --color-paper: #e9edf1; /* cool control-room paper (deliberately not cream) */
+  --color-surface: #ffffff;
+  --color-line: #d2d9e0; /* hairline rules + card borders */
+  --color-muted: #59636f; /* secondary text */
+  --color-brand: #0b6e78; /* instrument teal — interactive */
+  --color-brand-ink: #08525a;
+  --color-brand-soft: #e0f0f1;
+
+  /* Signal colors — fixed by the brief: BLOCK red / REVIEW amber / CLEAR green */
+  --color-block: #c0271f;
+  --color-block-soft: #fbe9e7;
+  --color-review: #9a5b00;
+  --color-review-soft: #fbeed6;
+  --color-clear: #1d7a4d;
+  --color-clear-soft: #e2f3e9;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-plex-sans), sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular figures for the instrument readouts (scores, hop counts). */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Visible keyboard focus everywhere — quality floor, not announced. */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Coachmark spotlight ring used by the first-run guided tour. */
+.coach-target {
+  position: relative;
+  z-index: 50;
+  box-shadow:
+    0 0 0 3px var(--color-surface),
+    0 0 0 6px var(--color-brand);
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes preflight-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: preflight-rise 0.32s ease both;
 }

@@ -1,5 +1,5 @@
 // Engine entry point. Route AND eval both call this. Parallel judges (Promise.all).
-// SPINE SKELETON — wiring is real; judge/lexicon bodies land in M2, fetchLandingPage in M3.
+// Fully wired: funnel scan + lexicon + Opus judge (per network, in parallel) + deterministic scoring.
 import {
   PreflightRequestSchema,
   type PreflightRequest,

@@ -1,0 +1,280 @@
+// Meta (Facebook/Instagram) rule pack — transcribed from research/policy_meta.md.
+// Triggers are short, high-signal lowercase phrases for the Layer-1 lexicon pre-scan.
+// Meta reviews the FULL FUNNEL: every rule applies to landing-page text/imagery too.
+import type { RulePack } from "@/lib/policy/types";
+
+export const META: RulePack = {
+  network: "meta",
+  displayName: "Meta (Facebook / Instagram)",
+  rules: [
+    // A. Personal attributes
+    {
+      id: "PA-01",
+      name: "Second-person health/condition implication",
+      triggers: [
+        "your back pain", "your anxiety", "your depression", "your diabetes",
+        "your arthritis", "your weight", "your acne", "your condition",
+        "struggling with", "suffering from",
+      ],
+      example: "Your back pain doesn't have to control you.",
+      severity: "high",
+    },
+    {
+      id: "PA-02",
+      name: "Conditional / diagnosis framing",
+      triggers: [
+        "if you've been diagnosed", "if you're struggling with",
+        "are you overweight", "are you in debt", "are you depressed",
+        "do you suffer from",
+      ],
+      example: "Are you struggling with debt? Click here.",
+      severity: "high",
+    },
+    {
+      id: "PA-03",
+      name: "Empathy / \"we know\" hooks implying knowledge of the viewer",
+      triggers: ["we understand your pain", "we know how hard", "we get what you're going through"],
+      example: "We know how hard living with anxiety is.",
+      severity: "med",
+    },
+    {
+      id: "PA-04",
+      name: "Implied-targeting phrasing of a sensitive group",
+      triggers: ["for people dealing with", "for those managing", "people like you"],
+      example: "For people dealing with financial challenges.",
+      severity: "med",
+    },
+    {
+      id: "PA-05",
+      name: "Implied knowledge of financial status",
+      triggers: [
+        "your debt", "your bad credit", "your low income", "bankrupt",
+        "behind on bills", "your credit score",
+      ],
+      example: "Erase your $20k of credit card debt.",
+      severity: "high",
+    },
+    {
+      id: "PA-06",
+      name: "Implied knowledge of name / PII / membership",
+      triggers: ["singles like you", "meet christian singles"],
+      example: "Meet Christian singles like you.",
+      severity: "high",
+    },
+    // B. Unrealistic / exaggerated claims
+    {
+      id: "EX-01",
+      name: "Guaranteed / absolute outcome",
+      triggers: ["guaranteed", "100%", "risk-free", "guaranteed results", "results guaranteed"],
+      example: "Guaranteed to clear your acne in 7 days.",
+      severity: "high",
+    },
+    {
+      id: "EX-02",
+      name: "Speed / specific-quantity outcome promise",
+      triggers: ["lbs in", "lose 30 lbs", "instant", "overnight", "in just 3 days", "in 7 days"],
+      example: "Lose 30 lbs in 2 weeks.",
+      severity: "high",
+    },
+    {
+      id: "EX-03",
+      name: "Unsubstantiated authority/proof claim",
+      triggers: ["clinically proven", "scientifically proven", "doctor recommended", "fda approved"],
+      example: "Clinically proven to melt belly fat.",
+      severity: "med",
+    },
+    {
+      id: "EX-04",
+      name: "Implied-outcome creative (text + visual)",
+      triggers: ["watch it grow", "see the difference", "watch your portfolio grow"],
+      example: "Watch your portfolio grow. (+ rising chart)",
+      severity: "med",
+    },
+    // C. Before/after & body image
+    {
+      id: "BA-01",
+      name: "Before/after side-by-side",
+      triggers: ["before and after", "before & after", "before/after"],
+      example: "Before & after — 60 days on our keto pills!",
+      severity: "high",
+    },
+    {
+      id: "BA-02",
+      name: "Negative self-perception / idealized body",
+      triggers: [
+        "perfect body", "dream body", "get rid of ugly fat", "embarrassing",
+        "your flaws", "perfect summer figure",
+      ],
+      example: "Stop hating your body — get the perfect summer figure.",
+      severity: "high",
+    },
+    {
+      id: "BA-03",
+      name: "Body-focus imagery red flags",
+      triggers: ["lose this", "pinch that fat", "tape measure"],
+      example: "Image pinching belly fat with \"lose this.\"",
+      severity: "med",
+    },
+    {
+      id: "BA-04",
+      name: "Idealized-body proximity",
+      triggers: ["this could be you"],
+      example: "Supplement next to a lean model captioned \"this could be you.\"",
+      severity: "low",
+    },
+    // D. Clickbait / misleading engagement
+    {
+      id: "CB-01",
+      name: "\"Doctors hate this\" / suppressed-secret trope",
+      triggers: [
+        "doctors hate this", "they don't want you to know", "one weird trick",
+        "this simple trick", "banned method", "secret method", "big pharma doesn't want",
+      ],
+      example: "Doctors HATE this one weird trick to reverse diabetes.",
+      severity: "high",
+    },
+    {
+      id: "CB-02",
+      name: "Fake urgency / scarcity",
+      triggers: ["only 3 left", "bottles left", "offer ends in", "act now or", "order in the next"],
+      example: "Only 3 bottles left — order in the next 5 minutes!",
+      severity: "med",
+    },
+    {
+      id: "CB-03",
+      name: "Sensational / shock bait",
+      triggers: ["shocking", "you won't believe", "this changed my life"],
+      example: "You won't believe what this $5 supplement does.",
+      severity: "low",
+    },
+    {
+      id: "CB-04",
+      name: "Unauthorized celebrity / fake endorsement bait",
+      triggers: ["swears by this", "as endorsed by", "celebrity-approved"],
+      example: "[Celebrity] swears by this fat burner.",
+      severity: "high",
+    },
+    // E. Health / supplement / weight-loss
+    {
+      id: "HW-01",
+      name: "Disease cure/treat/prevent claim (non-drug)",
+      triggers: [
+        "cure", "cures", "cures diabetes", "reverse diabetes", "reverses diabetes",
+        "cures cancer", "treats diabetes", "heal your",
+      ],
+      example: "This herb cures type-2 diabetes.",
+      severity: "high",
+    },
+    {
+      id: "HW-02",
+      name: "Risky structure-function overreach",
+      triggers: ["detox", "cleanse toxins", "boost immunity", "melt fat", "burn fat", "flush toxins", "balance hormones"],
+      example: "Cleanses all toxins from your liver overnight.",
+      severity: "med",
+    },
+    {
+      id: "HW-03",
+      name: "Weight-loss age-gate / outcome framing",
+      triggers: ["drop 4 dress sizes", "drop a dress size", "dress sizes"],
+      example: "Drop 4 dress sizes guaranteed.",
+      severity: "med",
+    },
+    {
+      id: "HW-04",
+      name: "Prescription / pharma without authorization",
+      triggers: ["ozempic", "semaglutide", "wegovy", "no prescription needed", "no prescription required"],
+      example: "Get Ozempic online — no prescription needed.",
+      severity: "high",
+    },
+    // F. Financial / make-money / crypto
+    {
+      id: "FN-01",
+      name: "Guaranteed/financial-return claim",
+      triggers: ["guaranteed returns", "risk-free investment", "double your money", "passive income guaranteed", "get rich"],
+      example: "Double your money in 30 days, risk-free.",
+      severity: "high",
+    },
+    {
+      id: "FN-02",
+      name: "Crypto without authorization",
+      triggers: ["crypto", "ico", "token presale", "staking", "10x guaranteed", "100x"],
+      example: "Join our ICO — 10x guaranteed.",
+      severity: "high",
+    },
+    {
+      id: "FN-03",
+      name: "Prohibited financial products",
+      triggers: ["payday loan", "paycheck advance", "contract for difference", "cfd", "student loan forgiveness"],
+      example: "Fast payday loans, cash in 1 hour.",
+      severity: "high",
+    },
+    {
+      id: "FN-04",
+      name: "Make-money / get-rich-quick scheme",
+      triggers: ["$500/day", "/day from your phone", "from your phone", "financial freedom", "fire your boss", "easy money", "no experience needed"],
+      example: "Make $500/day working 1 hour from your phone.",
+      severity: "high",
+    },
+    {
+      id: "FN-05",
+      name: "Regulated finance missing age-gate / license / disclosure",
+      triggers: ["personal loan", "credit card offer", "insurance quote"],
+      example: "Loan ad with no APR/terms and no 18+ targeting.",
+      severity: "med",
+    },
+    {
+      id: "FN-06",
+      name: "Requesting financial PII in ad",
+      triggers: ["enter your card number", "card number to check", "your ssn", "bank account number"],
+      example: "Enter your card number to check eligibility.",
+      severity: "high",
+    },
+    // G. Required disclaimers / disclosure (flag absence)
+    {
+      id: "DS-01",
+      name: "Missing affiliate/sponsorship disclosure",
+      triggers: ["affiliate link", "earn a commission", "commission when you buy"],
+      example: "Review-style ad with affiliate links and no disclosure.",
+      severity: "med",
+    },
+    {
+      id: "DS-02",
+      name: "Missing risk disclaimer (financial/crypto)",
+      triggers: ["trading bot", "investment returns", "crypto gains"],
+      example: "Trading ad showing gains, no risk statement.",
+      severity: "med",
+    },
+    {
+      id: "DS-03",
+      name: "Missing \"results vary\" / typical-results disclaimer",
+      triggers: ["i lost 40 lbs", "i lost", "i made $"],
+      example: "\"I lost 40 lbs!\" testimonial with no disclaimer.",
+      severity: "low",
+    },
+    {
+      id: "DS-04",
+      name: "Endorsement not based on actual use",
+      triggers: ["i use this daily", "i use this every day"],
+      example: "Fabricated 5-star \"I use this daily\" with no basis.",
+      severity: "med",
+    },
+    {
+      id: "DS-05",
+      name: "Ad–landing-page mismatch",
+      triggers: ["unapproved diet pills", "diet pills"],
+      example: "\"Wellness blog\" ad → page selling unapproved diet pills.",
+      severity: "high",
+    },
+  ],
+  sourceUrls: [
+    "https://transparency.meta.com/policies/ad-standards/",
+    "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+    "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+    "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/cryptocurrency-products-and-services/",
+    "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+    "https://transparency.meta.com/policies/ad-standards/deceptive-content/prohibited-financial-products-and-services/",
+    "https://www.facebook.com/business/help/432240224665596",
+    "https://www.facebook.com/business/help/2489235377779939",
+  ],
+};

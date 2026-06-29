@@ -1,6 +1,7 @@
 "use client";
 
 import type { Creative, Finding, NetworkVerdict } from "@/schemas/verdict";
+import type { NetworkId } from "@/lib/policy/types";
 import { TIER_META } from "@/components/VerdictBanner";
 import { FindingCard } from "@/components/FindingCard";
 import { HelpTip } from "@/components/HelpTip";
@@ -9,6 +10,7 @@ export type ItemStatus = "flighting" | "done" | "error";
 
 export interface CreativeItem {
   id: string;
+  network: NetworkId; // the network this variant was generated + verified for
   creative: Creative;
   status: ItemStatus;
   verdict?: NetworkVerdict; // the single requested network's verdict
@@ -79,6 +81,7 @@ export function VariantCard({
       <div className="mt-3 space-y-2 rounded-lg border border-line bg-paper p-3">
         <Field label="Headline" value={creative.headline} />
         <Field label="Body" value={creative.primaryText} />
+        <Field label="Detail" value={creative.description} />
         <Field label="CTA" value={creative.cta} />
       </div>
 
@@ -119,6 +122,7 @@ export function VariantCard({
               <div className="mt-1.5 space-y-1.5">
                 <Field label="Headline" value={item.rewrite.rewritten.headline} />
                 <Field label="Body" value={item.rewrite.rewritten.primaryText} />
+                <Field label="Detail" value={item.rewrite.rewritten.description} />
                 <Field label="CTA" value={item.rewrite.rewritten.cta} />
               </div>
               {item.rewrite.note && (

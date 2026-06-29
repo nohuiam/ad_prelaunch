@@ -78,6 +78,7 @@ export function CreativeLab() {
       const { variants } = (await res.json()) as { variants: Creative[] };
       const initial: CreativeItem[] = variants.map((c, i) => ({
         id: `v${i}`,
+        network: net,
         creative: c,
         status: "flighting",
       }));
@@ -100,7 +101,7 @@ export function CreativeLab() {
       const res = await fetch("/api/rewrite", {
         method: "POST",
         headers: JSON_HEADERS,
-        body: JSON.stringify({ network, creative: it.creative, findings }),
+        body: JSON.stringify({ network: it.network, creative: it.creative, findings }),
       });
       if (!res.ok) {
         const d = await res.json().catch(() => null);
@@ -123,6 +124,7 @@ export function CreativeLab() {
     setItems(
       ex.items.map((it, i) => ({
         id: `ex${i}`,
+        network: (ex.network as NetworkId) ?? "meta",
         creative: it.creative,
         status: "done" as const,
         verdict: it.verdict,

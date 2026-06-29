@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const STEPS = [
   {
@@ -29,6 +29,7 @@ export function Onboarding({
 }) {
   const [step, setStep] = useState(0);
   const [wasOpen, setWasOpen] = useState(open);
+  const primaryRef = useRef<HTMLButtonElement | null>(null);
 
   // Restart at the beginning each time it opens (adjust state during render).
   if (open !== wasOpen) {
@@ -44,6 +45,11 @@ export function Onboarding({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
+
+  // Move focus into the dialog so keyboard users land on the primary action.
+  useEffect(() => {
+    if (open) primaryRef.current?.focus();
+  }, [open, step]);
 
   if (!open) return null;
 
@@ -104,6 +110,7 @@ export function Onboarding({
               )}
               {last ? (
                 <button
+                  ref={primaryRef}
                   type="button"
                   onClick={onClose}
                   className="rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-ink"
@@ -112,6 +119,7 @@ export function Onboarding({
                 </button>
               ) : (
                 <button
+                  ref={primaryRef}
                   type="button"
                   onClick={() => setStep((s) => s + 1)}
                   className="rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-ink"

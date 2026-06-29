@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import {
+  cloneElement,
+  useId,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import type { PreflightRequest } from "@/schemas/verdict";
 import { HelpTip } from "@/components/HelpTip";
 
@@ -298,12 +304,22 @@ function Field({
   helpKey: string;
   required?: boolean;
   error?: string;
-  children: ReactNode;
+  children: ReactElement<Record<string, unknown>>;
 }) {
+  const id = useId();
+  const errorId = `${id}-error`;
+  // Wire the single input child to its label and any error message.
+  const control = cloneElement(children, {
+    id,
+    "aria-invalid": error ? true : undefined,
+    "aria-describedby": error ? errorId : undefined,
+  });
   return (
     <div className="mt-4 first:mt-0">
       <div className="mb-1.5 flex flex-wrap items-center gap-x-1.5">
-        <label className="text-sm font-medium text-ink">{label}</label>
+        <label htmlFor={id} className="text-sm font-medium text-ink">
+          {label}
+        </label>
         {required && (
           <span className="text-xs text-block" aria-hidden>
             *
@@ -311,15 +327,19 @@ function Field({
         )}
         <HelpTip k={helpKey} />
       </div>
-      {children}
-      {error && <ErrorText>{error}</ErrorText>}
+      {control}
+      {error && <ErrorText id={errorId}>{error}</ErrorText>}
     </div>
   );
 }
 
-function ErrorText({ children }: { children: ReactNode }) {
+function ErrorText({ id, children }: { id?: string; children: ReactNode }) {
   return (
-    <p role="alert" className="mt-1.5 text-xs font-medium text-block">
+    <p
+      id={id}
+      role="alert"
+      className="mt-1.5 text-xs font-medium text-block"
+    >
       {children}
     </p>
   );

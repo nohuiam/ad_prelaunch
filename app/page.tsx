@@ -324,12 +324,15 @@ function Coachmarks({
 
   return (
     <div className="fixed inset-0 z-[55]" aria-live="polite">
-      {/* click-catcher so the tour stays in focus; advances on click */}
+      {/* Transparent click-catcher: clicking anywhere advances the tour and
+          keeps page controls inert during it. No dim — a full-screen overlay
+          would sit above the highlighted element (whose .rise ancestors trap
+          its z-index), muting the ring. The crisp ring + callout guide instead. */}
       <button
         type="button"
         aria-label="Next step"
         onClick={() => (last ? onDone() : setIndex((i) => i + 1))}
-        className="absolute inset-0 cursor-default bg-ink/30"
+        className="absolute inset-0 cursor-default"
       />
       <div
         role="dialog"

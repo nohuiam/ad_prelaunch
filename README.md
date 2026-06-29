@@ -2,6 +2,8 @@
 
 **Check your ad against network and FTC policy before you spend a dollar — or risk your account.**
 
+**▶ Live demo: https://adprelaunch.vercel.app**
+
 Paste your headline, body, CTA, and landing-page URL. In seconds you get a per-network verdict —
 **BLOCK**, **REVIEW**, or **CLEAR** — with the exact offending words, why each one trips policy, and a
 compliant rewrite you can copy straight back into your ad manager.

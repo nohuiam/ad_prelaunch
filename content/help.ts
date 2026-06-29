@@ -127,6 +127,32 @@ export const help: Record<string, HelpEntry> = {
     title: "Landing-page flags",
     body: "Specific issues we spotted on the path or page — for example a domain that doesn't match your ad, or a missing disclosure.",
   },
+
+  // ── Creative Lab (Module 02) ─────────────────────────────────────────────
+  "creative.offer": {
+    title: "Your offer",
+    body: "Describe the product and its main benefit. The generator writes ad copy around this — the more specific you are, the better the variants.",
+  },
+  "creative.network": {
+    title: "Network",
+    body: "Which platform these variants are for. Copy is tailored to that platform's format and written to pass its policies.",
+  },
+  "creative.count": {
+    title: "Number of variants",
+    body: "How many different angles to generate. Each gets its own hook, then is checked separately.",
+  },
+  "creative.generate": {
+    title: "Generate compliant ads",
+    body: "Writes ads built to pass policy, then runs each through the same pre-flight check as Module 01. You ship only the ones that clear.",
+  },
+  "creative.ready": {
+    title: "Ready to run",
+    body: "This variant passed the pre-flight check on the selected network — no policy issues found.",
+  },
+  "creative.tweak": {
+    title: "Needs a tweak",
+    body: "The check flagged something. Fix the items shown, or hit “Make this compliant” for a rewrite, then it's good to run.",
+  },
 };
 
 // Funnel flag codes are emitted by the engine; translate them to plain labels.

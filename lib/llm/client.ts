@@ -23,11 +23,14 @@ export interface SystemBlock {
  * Note: output_config carries both `effort` and `format`; if a future SDK rejects the pairing,
  * drop `effort` here — adaptive thinking alone still gives strong depth.
  */
+export type Effort = "low" | "medium" | "high" | "xhigh" | "max";
+
 export async function parseStructured<S extends z.ZodType>(opts: {
   system: SystemBlock[];
   user: Anthropic.MessageParam["content"];
   schema: S;
   maxTokens?: number;
+  effort?: Effort; // default "high"; use "medium" for cheaper/faster generation
 }): Promise<z.infer<S>> {
   const system = opts.system.map((b) =>
     b.cache
@@ -39,7 +42,7 @@ export async function parseStructured<S extends z.ZodType>(opts: {
     model: MODEL,
     max_tokens: opts.maxTokens ?? 8192,
     thinking: { type: "adaptive" },
-    output_config: { effort: "high", format: zodOutputFormat(opts.schema) },
+    output_config: { effort: opts.effort ?? "high", format: zodOutputFormat(opts.schema) },
     system,
     messages: [{ role: "user", content: opts.user }],
   });

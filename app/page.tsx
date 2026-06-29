@@ -3,13 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PreflightRequest, PreflightResult } from "@/schemas/verdict";
 import sampleResult from "@/fixtures/sample_result.json";
-import {
-  HelpModeProvider,
-  HelpTip,
-  useHelpMode,
-} from "@/components/HelpTip";
+import { HelpModeProvider, HelpTip, useHelpMode } from "@/components/HelpTip";
 import { PreflightForm } from "@/components/PreflightForm";
 import { ResultsPanel, type ResultStatus } from "@/components/ResultsPanel";
+import { CreativeLab } from "@/components/CreativeLab";
 import { Onboarding } from "@/components/Onboarding";
 import { ModuleFooter } from "@/components/ModuleFooter";
 
@@ -18,6 +15,8 @@ const USE_MOCK = false;
 
 const LS_ONBOARD = "adpf_onboarding_v1";
 const LS_COACH = "adpf_coach_v1";
+
+type Mode = "preflight" | "creative";
 
 const COACH_STEPS: { key: string; title: string; body: string }[] = [
   {
@@ -63,24 +62,15 @@ export default function Home() {
 }
 
 function App() {
-  const [status, setStatus] = useState<ResultStatus>("idle");
-  const [result, setResult] = useState<PreflightResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [requestedNetworks, setRequestedNetworks] = useState<string[]>([]);
-
+  const [mode, setMode] = useState<Mode>("preflight");
   const [onboardingOpen, setOnboardingOpen] = useState(false);
-  const [coachActive, setCoachActive] = useState(false);
-  const coachDoneRef = useRef(false);
 
-  // First visit: show the intro. Remember whether the coach tour ran.
-  // Deferred a frame so this reads localStorage after mount, off the effect body.
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
       try {
         if (!localStorage.getItem(LS_ONBOARD)) setOnboardingOpen(true);
-        coachDoneRef.current = Boolean(localStorage.getItem(LS_COACH));
       } catch {
-        /* storage blocked — show nothing extra, app still works */
+        /* storage blocked — app still works */
       }
     });
     return () => cancelAnimationFrame(raf);
@@ -93,6 +83,49 @@ function App() {
     } catch {
       /* ignore */
     }
+  }, []);
+
+  return (
+    <div className="flex min-h-full flex-col">
+      <Header
+        mode={mode}
+        setMode={setMode}
+        onOpenOnboarding={() => setOnboardingOpen(true)}
+      />
+
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        {mode === "preflight" ? (
+          <PreFlightView onboardingOpen={onboardingOpen} />
+        ) : (
+          <CreativeLab />
+        )}
+        <ModuleFooter />
+      </main>
+
+      <Onboarding open={onboardingOpen} onClose={closeOnboarding} />
+    </div>
+  );
+}
+
+/* ── Pre-Flight (Module 01) — behavior unchanged, just relocated ─────────── */
+
+function PreFlightView({ onboardingOpen }: { onboardingOpen: boolean }) {
+  const [status, setStatus] = useState<ResultStatus>("idle");
+  const [result, setResult] = useState<PreflightResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [requestedNetworks, setRequestedNetworks] = useState<string[]>([]);
+  const [coachActive, setCoachActive] = useState(false);
+  const coachDoneRef = useRef(false);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      try {
+        coachDoneRef.current = Boolean(localStorage.getItem(LS_COACH));
+      } catch {
+        /* ignore */
+      }
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   const finishCoach = useCallback(() => {
@@ -114,7 +147,6 @@ function App() {
       const data = await callPreflight(req);
       setResult(data);
       setStatus("done");
-      // Coach a brand-new user through their first example result.
       if (fromExample && !coachDoneRef.current && !onboardingOpen) {
         setCoachActive(true);
       }
@@ -125,58 +157,51 @@ function App() {
   }
 
   return (
-    <div className="flex min-h-full flex-col">
-      <Header onOpenOnboarding={() => setOnboardingOpen(true)} />
-
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-          {/* Left — the flight plan */}
-          <div className="lg:sticky lg:top-6">
-            <div className="mb-2 flex items-baseline gap-2">
-              <h1 className="font-display text-lg font-semibold text-ink">
-                Your ad
-              </h1>
-              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-                Flight plan
-              </span>
-            </div>
-            <PreflightForm onRun={handleRun} running={status === "running"} />
+    <>
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <div className="lg:sticky lg:top-6">
+          <div className="mb-2 flex items-baseline gap-2">
+            <h1 className="font-display text-lg font-semibold text-ink">Your ad</h1>
+            <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+              Flight plan
+            </span>
           </div>
-
-          {/* Right — the clearance */}
-          <div>
-            <div className="mb-2 flex items-baseline gap-2">
-              <h1 className="font-display text-lg font-semibold text-ink">
-                Your risk
-              </h1>
-              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-                Clearance
-              </span>
-            </div>
-            <ResultsPanel
-              status={status}
-              result={result}
-              error={error}
-              requestedNetworks={requestedNetworks}
-              coach={coachActive}
-            />
-          </div>
+          <PreflightForm onRun={handleRun} running={status === "running"} />
         </div>
 
-        <ModuleFooter />
-      </main>
+        <div>
+          <div className="mb-2 flex items-baseline gap-2">
+            <h1 className="font-display text-lg font-semibold text-ink">Your risk</h1>
+            <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+              Clearance
+            </span>
+          </div>
+          <ResultsPanel
+            status={status}
+            result={result}
+            error={error}
+            requestedNetworks={requestedNetworks}
+            coach={coachActive}
+          />
+        </div>
+      </div>
 
-      <Onboarding open={onboardingOpen} onClose={closeOnboarding} />
-      {coachActive && (
-        <Coachmarks steps={COACH_STEPS} onDone={finishCoach} />
-      )}
-    </div>
+      {coachActive && <Coachmarks steps={COACH_STEPS} onDone={finishCoach} />}
+    </>
   );
 }
 
 /* ── Header ─────────────────────────────────────────────────────────────── */
 
-function Header({ onOpenOnboarding }: { onOpenOnboarding: () => void }) {
+function Header({
+  mode,
+  setMode,
+  onOpenOnboarding,
+}: {
+  mode: Mode;
+  setMode: (m: Mode) => void;
+  onOpenOnboarding: () => void;
+}) {
   const { helpMode, setHelpMode } = useHelpMode();
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur">
@@ -193,10 +218,20 @@ function Header({ onOpenOnboarding }: { onOpenOnboarding: () => void }) {
               Ad Prelaunch
             </p>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-              Compliance Pre-Flight
+              Ad-Ops Operating Layer
             </p>
           </div>
         </div>
+
+        {/* module tabs */}
+        <nav className="order-last flex w-full gap-1 sm:order-none sm:w-auto">
+          <ModeTab active={mode === "preflight"} onClick={() => setMode("preflight")}>
+            Pre-Flight
+          </ModeTab>
+          <ModeTab active={mode === "creative"} onClick={() => setMode("creative")}>
+            Creative Lab
+          </ModeTab>
+        </nav>
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
@@ -240,6 +275,31 @@ function Header({ onOpenOnboarding }: { onOpenOnboarding: () => void }) {
   );
 }
 
+function ModeTab({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`flex-1 rounded-full px-4 py-1.5 text-sm font-semibold transition-colors sm:flex-none ${
+        active
+          ? "bg-ink text-white"
+          : "border border-line bg-surface text-muted hover:text-ink"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 /* ── Coachmarks ─────────────────────────────────────────────────────────────
    A lightweight first-run tour. Spotlights real result elements by their
    data-coach attribute and shows a callout anchored to each one. */
@@ -264,8 +324,6 @@ function Coachmarks({
       if (el) setRect(el.getBoundingClientRect());
     };
 
-    // Defer to the next frame so measuring (and any step-skip) happens
-    // outside the effect body — this is DOM synchronization, not derived state.
     const raf = requestAnimationFrame(() => {
       el = document.querySelector<HTMLElement>(`[data-coach="${step.key}"]`);
 
@@ -274,7 +332,6 @@ function Coachmarks({
       }
 
       if (!el) {
-        // Target not on screen — skip to the next step or finish.
         if (index < total - 1) setIndex((i) => i + 1);
         else onDone();
         return;
@@ -295,7 +352,6 @@ function Coachmarks({
     };
   }, [index, steps, total, onDone]);
 
-  // Clean up the highlight on unmount.
   useEffect(() => {
     return () => {
       if (elRef.current) elRef.current.classList.remove("coach-target");
@@ -305,7 +361,6 @@ function Coachmarks({
   const step = steps[index];
   const last = index === total - 1;
 
-  // Position the callout: below the target if there's room, else above.
   const vh = typeof window !== "undefined" ? window.innerHeight : 800;
   const vw = typeof window !== "undefined" ? window.innerWidth : 1000;
   const calloutW = 288;
@@ -323,10 +378,6 @@ function Coachmarks({
 
   return (
     <div className="fixed inset-0 z-[55]" aria-live="polite">
-      {/* Transparent click-catcher: clicking anywhere advances the tour and
-          keeps page controls inert during it. No dim — a full-screen overlay
-          would sit above the highlighted element (whose .rise ancestors trap
-          its z-index), muting the ring. The crisp ring + callout guide instead. */}
       <button
         type="button"
         aria-label="Next step"
@@ -345,9 +396,7 @@ function Coachmarks({
         <h3 className="mt-1.5 font-display text-sm font-semibold text-ink">
           {step.title}
         </h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-muted">
-          {step.body}
-        </p>
+        <p className="mt-1 text-[13px] leading-relaxed text-muted">{step.body}</p>
         <div className="mt-3 flex items-center justify-between">
           <button
             type="button"

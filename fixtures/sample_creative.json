@@ -1,0 +1,45 @@
+{
+  "offer": "A daily greens powder with 25 fruits and vegetables, probiotics, and adaptogens. For busy people who don't eat enough veggies and want more steady energy and better digestion.",
+  "network": "meta",
+  "count": 2,
+  "items": [
+    {
+      "creative": {
+        "headline": "Veggies you'll actually drink",
+        "primaryText": "Most of us don't eat enough vegetables. One scoop of our greens blend mixes 25 fruits and veggies, probiotics, and adaptogens into a glass — an easy daily habit for people who want more steady energy and easier digestion. Individual results vary.",
+        "cta": "Try it today"
+      },
+      "verdict": {
+        "network": "meta",
+        "score": 0,
+        "tier": "CLEAR",
+        "findings": []
+      },
+      "ftcFindings": []
+    },
+    {
+      "creative": {
+        "headline": "Clinically proven energy boost",
+        "primaryText": "Stop feeling sluggish by 2pm. Our clinically proven greens formula floods your body with 25 superfoods so you feel energized all day. Thousands have made the switch.",
+        "cta": "Shop now"
+      },
+      "verdict": {
+        "network": "meta",
+        "score": 2,
+        "tier": "REVIEW",
+        "findings": [
+          {
+            "ruleId": "EX-03",
+            "network": "meta",
+            "severity": "med",
+            "title": "Unsubstantiated \"clinically proven\" claim",
+            "evidence": "clinically proven greens formula",
+            "why": "Saying something is \"clinically proven\" without a study to back it up reads as misleading and draws extra review.",
+            "suggestedFix": "Drop \"clinically proven,\" or only use it if you can link a real study on the landing page."
+          }
+        ]
+      },
+      "ftcFindings": []
+    }
+  ]
+}

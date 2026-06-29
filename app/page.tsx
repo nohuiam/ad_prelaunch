@@ -13,9 +13,8 @@ import { ResultsPanel, type ResultStatus } from "@/components/ResultsPanel";
 import { Onboarding } from "@/components/Onboarding";
 import { ModuleFooter } from "@/components/ModuleFooter";
 
-// Default to the mock so the UI builds with zero engine dependency.
-// Flip to false after merge to POST the real request to /api/preflight.
-const USE_MOCK = true;
+// Live: POST the real request to /api/preflight. (Set true to render the offline mock fixture.)
+const USE_MOCK = false;
 
 const LS_ONBOARD = "adpf_onboarding_v1";
 const LS_COACH = "adpf_coach_v1";

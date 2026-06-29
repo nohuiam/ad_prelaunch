@@ -2,7 +2,7 @@
   "perNetwork": [
     {
       "network": "meta",
-      "score": 9.5,
+      "score": 8,
       "tier": "BLOCK",
       "findings": [
         {
@@ -27,7 +27,7 @@
     },
     {
       "network": "google",
-      "score": 3.0,
+      "score": 2,
       "tier": "REVIEW",
       "findings": [
         {

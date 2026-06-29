@@ -37,7 +37,7 @@ export async function parseStructured<S extends z.ZodType>(opts: {
 
   const res = await client().messages.parse({
     model: MODEL,
-    max_tokens: opts.maxTokens ?? 4096,
+    max_tokens: opts.maxTokens ?? 8192,
     thinking: { type: "adaptive" },
     output_config: { effort: "high", format: zodOutputFormat(opts.schema) },
     system,

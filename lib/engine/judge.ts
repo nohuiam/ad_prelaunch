@@ -56,7 +56,7 @@ export async function judgeNetwork(args: JudgeArgs): Promise<JudgeFinding[]> {
     system,
     user: [{ type: "text", text: userText }],
     schema: JudgeOutputSchema,
-    maxTokens: 4096,
+    maxTokens: 16000, // headroom: effort=high + adaptive thinking must not truncate the findings JSON
   });
 
   return out.findings;

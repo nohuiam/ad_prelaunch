@@ -10,7 +10,7 @@ import {
 } from "@/schemas/verdict";
 import { judgeNetwork } from "@/lib/engine/judge";
 import { scoreFindings } from "@/lib/engine/score";
-// M3 (Session D): import { fetchLandingPage } from "@/lib/engine/fetch_landing_page";
+import { fetchLandingPage } from "@/lib/engine/fetch_landing_page";
 
 function creativeToText(c: PreflightRequest["creative"]): string {
   return [c.headline, c.primaryText, c.description, c.cta].filter(Boolean).join("\n");
@@ -24,13 +24,15 @@ export async function runPreflight(input: PreflightRequest): Promise<PreflightRe
   const req = PreflightRequestSchema.parse(input);
   const creativeText = creativeToText(req.creative);
 
-  // M3: wire the real landing-page fetch (Session D's fetchLandingPage).
-  const funnel: Funnel = defaultFunnel();
-  const landingText: string | undefined = undefined;
-  // if (req.landingPageUrl) {
-  //   const lp = await fetchLandingPage(req.landingPageUrl);
-  //   funnel = lp; landingText = lp.text;
-  // }
+  // Fetch + scan the landing page (and redirect chain) once, if provided. Never throws.
+  // Strip `text` out of the funnel so we don't leak the full scraped page in the API response.
+  let funnel: Funnel = defaultFunnel();
+  let landingText: string | undefined;
+  if (req.landingPageUrl) {
+    const { text, ...funnelData } = await fetchLandingPage(req.landingPageUrl);
+    funnel = funnelData;
+    landingText = text;
+  }
 
   type Target = PreflightRequest["networks"][number] | "ftc";
   const targets: Target[] = [...req.networks, "ftc"];

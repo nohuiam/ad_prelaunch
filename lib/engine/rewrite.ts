@@ -70,7 +70,7 @@ export async function rewriteCreative(args: {
       system: [{ text: ROLE }],
       user: [{ type: "text", text: userText }],
       schema: RewriteOutputSchema,
-      maxTokens: 1500,
+      maxTokens: 4096, // effort=high + adaptive thinking needs headroom so the rewrite isn't truncated
     });
 
     const rewritten: Partial<Creative> = {};

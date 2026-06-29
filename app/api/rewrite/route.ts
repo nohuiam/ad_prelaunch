@@ -1,15 +1,22 @@
-// POST /api/preflight — validate, rate-limit, size-check, run the engine (parallel judges), return PreflightResult.
-// Next 16 route handler. Node runtime (Anthropic SDK + node-html-parser need Node, not Edge).
-import { PreflightRequestSchema } from "@/schemas/verdict";
-import { runPreflight } from "@/lib/engine/run_preflight";
+// POST /api/rewrite — on-demand compliant rewrite of a creative for ONE network.
+// Body: { network: string, creative: Creative, findings: Finding[] } → { rewritten, note }.
+// Separate from /api/preflight so we only pay for a rewrite when the user asks for one.
+import { z } from "zod";
+import { CreativeSchema, FindingSchema } from "@/schemas/verdict";
+import { rewriteCreative } from "@/lib/engine/rewrite";
 import { checkRateLimit } from "@/lib/llm/ratelimit";
-import { checkCreativeSize, checkImageSize } from "@/lib/llm/limits";
+import { checkCreativeSize } from "@/lib/llm/limits";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+const RewriteRequestSchema = z.object({
+  network: z.string().min(1),
+  creative: CreativeSchema,
+  findings: z.array(FindingSchema),
+});
+
 export async function POST(request: Request) {
-  // Rate-limit by IP before doing any work.
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const rl = checkRateLimit(ip);
   if (!rl.ok) {
@@ -26,7 +33,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 
-  const parsed = PreflightRequestSchema.safeParse(body);
+  const parsed = RewriteRequestSchema.safeParse(body);
   if (!parsed.success) {
     return Response.json(
       { error: "Invalid request.", details: parsed.error.flatten() },
@@ -34,16 +41,14 @@ export async function POST(request: Request) {
     );
   }
 
-  // Reject oversized payloads before spending a model call.
-  for (const c of [checkCreativeSize(parsed.data.creative), checkImageSize(parsed.data.imageBase64)]) {
-    if (!c.ok) return Response.json({ error: c.error }, { status: 413 });
-  }
+  const size = checkCreativeSize(parsed.data.creative);
+  if (!size.ok) return Response.json({ error: size.error }, { status: 413 });
 
   try {
-    const result = await runPreflight(parsed.data);
+    const result = await rewriteCreative(parsed.data);
     return Response.json(result);
   } catch (err) {
-    console.error("[preflight] error:", err);
+    console.error("[rewrite] error:", err);
     const message = err instanceof Error ? err.message : "Internal error.";
     return Response.json({ error: message }, { status: 500 });
   }

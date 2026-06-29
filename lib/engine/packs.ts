@@ -1,10 +1,7 @@
-// Indirection between the engine and Session B's rule packs.
-// Until B's `lib/policy/index.ts` (PACKS) is merged, getPack returns null and that network
-// simply yields no findings (CLEAR). AT INTEGRATION: uncomment the import + the lookup.
+// Indirection between the engine and Session B's rule packs (now merged).
 import type { RulePack, NetworkId } from "@/lib/policy/types";
-// import { PACKS } from "@/lib/policy"; // <-- Session B delivers this (Record<NetworkId|"ftc", RulePack>)
+import { PACKS } from "@/lib/policy";
 
-export function getPack(_network: NetworkId | "ftc"): RulePack | null {
-  // return PACKS[_network] ?? null; // <-- enable at integration with Session B
-  return null;
+export function getPack(network: NetworkId | "ftc"): RulePack | null {
+  return PACKS[network] ?? null;
 }

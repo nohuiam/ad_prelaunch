@@ -1,11 +1,17 @@
-// Shared Anthropic client + a structured-output helper.
+// Shared Anthropic client (lazy) + a structured-output helper.
 // Lead (judge) and Session D (rewrite) both call parseStructured so behavior stays consistent.
+// Lazy construction: importing this module never throws on a missing key — only an actual call does.
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import type { z } from "zod";
 
 export const MODEL = "claude-opus-4-8";
-export const anthropic = new Anthropic(); // reads ANTHROPIC_API_KEY from env
+
+let _client: Anthropic | null = null;
+export function client(): Anthropic {
+  if (!_client) _client = new Anthropic(); // reads ANTHROPIC_API_KEY; throws here only when first used
+  return _client;
+}
 
 export interface SystemBlock {
   text: string;
@@ -29,7 +35,7 @@ export async function parseStructured<S extends z.ZodType>(opts: {
       : { type: "text" as const, text: b.text },
   );
 
-  const res = await anthropic.messages.parse({
+  const res = await client().messages.parse({
     model: MODEL,
     max_tokens: opts.maxTokens ?? 4096,
     thinking: { type: "adaptive" },
